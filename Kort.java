@@ -1,10 +1,9 @@
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import javax.swing.*;
+import java.awt.*;
 
 
 /**
- * @author Tobias Hallberg
+ * @author Tobias Hallberg & Emil Hukic
  */
 public class Kort extends JColorfulButton {
 
@@ -12,8 +11,10 @@ public class Kort extends JColorfulButton {
     private Status currentStatus;   //kortets status
 
 
+
     public Kort(Icon myIcon) { //Konstruktor med Icon-parameter
-        setIcon(myIcon);
+        this.setIcon(myIcon);
+        setStatus(Status.SAKNAS);
 
 
     }
@@ -22,7 +23,6 @@ public class Kort extends JColorfulButton {
         this.setIcon(myIcon);
         System.out.println("Konstrutkor- status sätts till: " + s);
         this.setStatus(s);
-
     }
 
 
@@ -31,9 +31,21 @@ public class Kort extends JColorfulButton {
     }
 
     public void setStatus (Status s) {  //Ändra kortets tillstånd
-        System.out.println("setStatus: " + s);
+        //System.out.println("setStatus: " + s);
         currentStatus = s;
-        System.out.println("Status satt till: " + currentStatus);
+        //System.out.println("Status satt till: " + currentStatus);
+
+
+        if (s == Status.DOLT) {
+            setBackground(Color.BLUE);
+           // setIcon(null);
+            System.out.println("DOLT: Icon till null");
+        } else if (s == Status.SAKNAS) {
+            setBackground(Color.WHITE);
+        } else if (s == Status.SYNLIGT) {
+            //Sätta bild
+        }
+
     }
 
     public Status getStatus () {  //Hämta kortets tillstånd
@@ -54,12 +66,7 @@ public class Kort extends JColorfulButton {
 
 
 
-    public int getIconHeight() {
-        return this.getIconHeight();
-    }
-
-/*
-
+    /*
     private class Icon { //bild för varje kort. Osäker på den ska vara en inner class eller inte
         //Om DOLT => blå, SAKNAR => vit, SYNLIGT=> bild
 
@@ -67,6 +74,10 @@ public class Kort extends JColorfulButton {
 
 
     } */
+
+
+
+
 
 
 
