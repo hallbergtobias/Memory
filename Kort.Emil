@@ -1,0 +1,51 @@
+import java.awt.*;
+import javax.swing.*;
+
+public class Kort extends JColorfulButton {
+
+    private Status currentStatus;
+    private Icon picture;
+    
+    public enum Status {
+        DOLT, SYNLIGT, SAKNAS
+    }
+
+    public Kort(Icon icon) {
+        this(icon, Status.SAKNAS);
+    }
+
+    public Kort(Icon icon, Status s) {
+        setIcon(icon);
+        this.picture=icon;
+        setStatus(s);
+    }
+
+
+    public void setStatus (Status s) {
+        currentStatus = s;
+        if (s == Status.DOLT) {
+            setIcon(null);
+            setBackground(Color.BLUE);
+        } else if (s == Status.SAKNAS) {
+            setIcon(null);
+            setBackground(Color.WHITE);
+        } else if (s == Status.SYNLIGT) {
+            setIcon(this.picture);
+        }
+    }
+
+    public Status getStatus () {
+        return this.currentStatus;
+    }
+
+    public Kort copy() {
+        Kort copy = new Kort(this.picture, this.getStatus());
+        return copy;
+    }
+
+    public Boolean sammaBild (Kort cardOne) {
+    if (cardOne.getIcon() == null && (this.getIcon() == null)) {
+        return true; }
+    return cardOne.getIcon().equals(this.getIcon());
+    }
+}
