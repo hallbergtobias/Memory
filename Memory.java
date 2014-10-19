@@ -1,11 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.File;
 
 /**
  *
  */
-public class Memory extends JFrame{
+public class Memory extends JFrame {
 
 
     private Kort k[]; //alla kort
@@ -37,9 +38,9 @@ public class Memory extends JFrame{
 
 
         String antKol = JOptionPane.showInputDialog("Ange antal kolumner: ");
-        columns = Integer.parseInt(antKol);
+        this.columns = Integer.parseInt(antKol);
         String antRad = JOptionPane.showInputDialog("Ange antal rader: ");
-        rows = Integer.parseInt(antRad);
+        this.rows = Integer.parseInt(antRad);
 
        /* columns = 2; //satte värde för pallade inte alla rutor
         rows = 2; */
@@ -65,12 +66,20 @@ public class Memory extends JFrame{
         btnPanel.add(quitBtn);
         add(btnPanel, BorderLayout.SOUTH);
 
+        JLabel lblSpelare1 = new JLabel("Spelare 1");
+        JLabel lblSpelare2 = new JLabel("Spelare 2");
+
         JPanel playerPanel = new JPanel(new GridLayout(2,1));
-        playerPanel.setPreferredSize(new Dimension(80,260));
+        playerPanel.setPreferredSize(new Dimension(80, 260));
+
         JPanel player1 = new JPanel();
         player1.setBackground(Color.YELLOW);
+        player1.add(lblSpelare1);
+
         JPanel player2 = new JPanel();
-        player2.setBackground(Color.BLUE); //ska också vara gul
+        player2.setBackground(Color.YELLOW);
+        player2.add(lblSpelare2);
+
         playerPanel.add(player1);
         playerPanel.add(player2);
         add(playerPanel, BorderLayout.WEST);
@@ -98,7 +107,33 @@ public class Memory extends JFrame{
 
     public void nyttSpel () {   //ska anropas när NYTT klickas
 
-        //add(k[0]);
+        Verktyg verktyg = new Verktyg();
+        verktyg.slumpOrdning(this.k);    //blandar om för att kunna plocka ut hälften
+
+
+        this.spelKort = new Kort[rows*columns];
+
+        for (int i=0; i<((rows*columns)/2);i++) {
+            this.spelKort[i] = this.k[i];   //lägger in de /2 första
+            this.spelKort[i+((rows*columns)/2)] = this.k[i];    //lägger in andra hälften
+        }
+
+        verktyg.slumpOrdning(this.spelKort);    //slumpar slutligen om igen
+
+
+        //ska här placeras ut
+
+        JPanel gamePanel = new JPanel(new GridLayout(columns,rows));
+
+        for (int i=0; i<(rows*columns);i++) {   //loopar ut alla kort
+            gamePanel.add(spelKort[i]);
+        }
+
+        add(gamePanel);
+
+
+
+
 
 
 
