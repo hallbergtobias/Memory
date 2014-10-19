@@ -53,11 +53,7 @@ public class Kort extends JColorfulButton {
         return copy;
     }
 
-/*
-    public Boolean sammaBild (Kort cardOne) {
-        return cardOne.getIcon().equals(this.getIcon()); //equals kollar data ej adress
-    }
-*/
+
     public Boolean sammaBild (Kort cardOne) {
         return (cardOne.getIcon() == this.getIcon());
 
@@ -65,15 +61,6 @@ public class Kort extends JColorfulButton {
 
 
 
-
-    /*
-    private class Icon { //bild för varje kort. Osäker på den ska vara en inner class eller inte
-        //Om DOLT => blå, SAKNAR => vit, SYNLIGT=> bild
-
-
-
-
-    } */
 
 
 
