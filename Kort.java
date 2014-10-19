@@ -9,20 +9,18 @@ public class Kort extends JColorfulButton {
 
 
     private Status currentStatus;   //kortets status
+    private Icon picture;
 
 
 
-    public Kort(Icon myIcon) { //Konstruktor med Icon-parameter
-        this.setIcon(myIcon);
-        setStatus(Status.SAKNAS);
-
-
+    public Kort(Icon icon) { //Konstruktor med Icon-parameter
+        this(icon, Status.SAKNAS);
     }
 
-    public Kort(Icon myIcon, Status s) {   //Konstruktor med Icon- och Statusparameter
-        this.setIcon(myIcon);
-        System.out.println("Konstrutkor- status sätts till: " + s);
-        this.setStatus(s);
+    public Kort(Icon icon, Status s) {   //Konstruktor med Icon- och Statusparameter
+        setIcon(icon);
+        this.picture=icon;
+        setStatus(s);
     }
 
 
@@ -31,36 +29,38 @@ public class Kort extends JColorfulButton {
     }
 
     public void setStatus (Status s) {  //Ändra kortets tillstånd
-        //System.out.println("setStatus: " + s);
         currentStatus = s;
-        //System.out.println("Status satt till: " + currentStatus);
 
 
         if (s == Status.DOLT) {
             setBackground(Color.BLUE);
-           // setIcon(null);
-            System.out.println("DOLT: Icon till null");
+            setIcon(null);
         } else if (s == Status.SAKNAS) {
             setBackground(Color.WHITE);
+            setIcon(null);
         } else if (s == Status.SYNLIGT) {
-            //Sätta bild
+            setIcon(this.picture);
         }
 
     }
 
     public Status getStatus () {  //Hämta kortets tillstånd
-        System.out.println("getStatus är: " + currentStatus);
         return this.currentStatus;
     }
 
     public Kort copy() { //osäker
-        Kort kopia = this;  //samma icon? samma tillstånd?
-        return kopia;
+        Kort copy = new Kort(this.picture, this.currentStatus);
+        return copy;
     }
 
-
+/*
     public Boolean sammaBild (Kort cardOne) {
         return cardOne.getIcon().equals(this.getIcon()); //equals kollar data ej adress
+    }
+*/
+    public Boolean sammaBild (Kort cardOne) {
+        return (cardOne.getIcon() == this.getIcon());
+
     }
 
 
