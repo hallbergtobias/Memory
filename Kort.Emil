@@ -44,6 +44,8 @@ public class Kort extends JColorfulButton {
     }
 
     public Boolean sammaBild (Kort cardOne) {
-    return getIcon() == this.getIcon();
+    if (cardOne.getIcon() == null && (this.getIcon() == null)) {
+        return true; }
+    return cardOne.getIcon().equals(this.getIcon());
     }
 }
