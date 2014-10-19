@@ -1,19 +1,27 @@
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 
 /**
  *
  */
-public class Memory {
+public class Memory extends JFrame{
 
-    Memory() {
+
+    private Kort k[]; //alla kort
+    private Kort spelKort[]; //kort vi spelar med
+    private int rows;
+    private int columns;
+
+    public Memory() {
 
         File bildmapp = new File("bildmapp");
         File[] bilder = bildmapp.listFiles();
 
-        Kort[] k = new Kort[bilder.length];
+        this.k = new Kort[bilder.length];
 
-        for(int i =0; i<bilder.length;i++) {
+
+        for(int i =0; i<bilder.length;i++) {    //loopar in alla kort i k
 
             ImageIcon bild = new ImageIcon(bilder[i].getPath());
 
@@ -23,6 +31,91 @@ public class Memory {
             System.out.println(bild);
 
         }
+
+
+
+
+
+        String antKol = JOptionPane.showInputDialog("Ange antal kolumner: ");
+        columns = Integer.parseInt(antKol);
+        String antRad = JOptionPane.showInputDialog("Ange antal rader: ");
+        rows = Integer.parseInt(antRad);
+
+       /* columns = 2; //satte värde för pallade inte alla rutor
+        rows = 2; */
+
+
+
+
+
+
+
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(400,400); //ska bero på antalet kolumner/rader!
+        setLocation(500,200);
+        spelPlan plan = new spelPlan();
+        add(plan);
+
+
+
+        JPanel btnPanel = new JPanel(new FlowLayout());
+        JButton newBtn = new JButton("Nytt");
+        JButton quitBtn = new JButton("Avsluta");
+        btnPanel.add(newBtn);
+        btnPanel.add(quitBtn);
+        add(btnPanel, BorderLayout.SOUTH);
+
+        JPanel playerPanel = new JPanel(new GridLayout(2,1));
+        setPreferredSize(new Dimension(80,260));
+        JPanel player1 = new JPanel();
+        //player1.setPreferredSize(new Dimension(80,130));
+        player1.setBackground(Color.YELLOW);
+        JPanel player2 = new JPanel();
+       // player2.setPreferredSize(new Dimension(80,130));
+        player2.setBackground(Color.BLUE); //ska också vara gul
+        playerPanel.add(player1);
+        playerPanel.add(player2);
+        add(playerPanel, BorderLayout.WEST);
+
+        //varje spelare ska vara 80x130
+
+
+
+
+        nyttSpel();
+
+
+        setVisible(true);
+
+
+
+
+
+    }
+
+
+    private class spelPlan extends JPanel {
+         public void paintComponent(Graphics g) {
+             super.paintComponent(g);
+         }
+
+    }
+
+    public void nyttSpel () {   //ska anropas när NYTT klickas
+
+        //add(k[0]);
+
+
+
+
+
+
+    }
+
+
+    public static void main(String[]args) {
+
+        new Memory();
 
     }
 
