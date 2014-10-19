@@ -66,19 +66,14 @@ public class Memory extends JFrame{
         add(btnPanel, BorderLayout.SOUTH);
 
         JPanel playerPanel = new JPanel(new GridLayout(2,1));
-        setPreferredSize(new Dimension(80,260));
+        playerPanel.setPreferredSize(new Dimension(80,260));
         JPanel player1 = new JPanel();
-        //player1.setPreferredSize(new Dimension(80,130));
         player1.setBackground(Color.YELLOW);
         JPanel player2 = new JPanel();
-       // player2.setPreferredSize(new Dimension(80,130));
         player2.setBackground(Color.BLUE); //ska också vara gul
         playerPanel.add(player1);
         playerPanel.add(player2);
         add(playerPanel, BorderLayout.WEST);
-
-        //varje spelare ska vara 80x130
-
 
 
 
