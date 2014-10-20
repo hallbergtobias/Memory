@@ -1,3 +1,5 @@
+import com.sun.codemodel.internal.JOp;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -20,31 +22,80 @@ public class Memory extends JFrame implements ActionListener{
 
     public Memory() {
 
-        File bildmapp = new File("bildmapp");
-        File[] bilder = bildmapp.listFiles();
 
-        this.k = new Kort[bilder.length];
+        try {
+            File bildmapp = new File("bildmapp");
+            File[] bilder = bildmapp.listFiles();
+
+            if (bilder.length<2) {  //bildmappen innehåller för få bilder
+                JOptionPane.showMessageDialog(this, "Mappen bildmapp innehåller endast " + bilder.length + " bilder. " +
+                        "Lägg in fler bilder. Programmet avslutas");
+                System.exit(0);
 
 
-        for(int i =0; i<bilder.length;i++) {    //loopar in alla kort i k
 
-            ImageIcon bild = new ImageIcon(bilder[i].getPath());
+            }
 
-            k[i] = new Kort(bild, Kort.Status.SYNLIGT); //ska ej vara synligt
+            this.k = new Kort[bilder.length];
 
-            System.out.println(bild);
+            //NullPointerException = ingen mapp
+
+
+            for (int i = 0; i < bilder.length; i++) {    //loopar in alla kort i k
+
+                ImageIcon bild = new ImageIcon(bilder[i].getPath());
+                k[i] = new Kort(bild); //ska ej vara synligt
+                System.out.println(bild);
+
+            }
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(this, "Mappen \"bildmapp\" hittas ej. Programmet avslutas");
+            System.out.println("bildmapp not found: " + e);
+            System.exit(0);
 
         }
 
 
 
 
-/*
-        String antKol = JOptionPane.showInputDialog("Ange antal kolumner: ");
-        this.columns = Integer.parseInt(antKol);
-        String antRad = JOptionPane.showInputDialog("Ange antal rader: ");
-        this.rows = Integer.parseInt(antRad);
-*/
+
+        boolean notEnoughCards = true;
+        while (notEnoughCards) {
+
+
+            String antKol = JOptionPane.showInputDialog("Ange antal kolumner: ");
+
+            String antRad = JOptionPane.showInputDialog("Ange antal rader: ");
+            //numberformatexcetion
+
+            try {
+                this.columns = Integer.parseInt(antKol);
+                this.rows = Integer.parseInt(antRad);
+
+                if ((this.columns*this.rows)/2 > this.k.length) {
+                    JOptionPane.showMessageDialog(this, "Du har för få bilder i din bildmapp. Ange färe kolumner/rader.");
+
+
+                } else {
+
+                    notEnoughCards = false;
+                }
+
+
+
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Ange antaler rader/kolumner som en siffra, tex \"4\".");
+
+
+
+            }
+
+
+        }
+
+
+
+
         columns = 4; //satte värde för pallade inte alla rutor
         rows = 4;
 
@@ -122,6 +173,9 @@ public class Memory extends JFrame implements ActionListener{
             nyttSpel();
         } else if (e.getSource() == quitBtn) {
             System.exit(1);
+        } else if (e.getSource() instanceof Kort) {
+            Kort valtKort = (Kort) e.getSource();
+            valtKort.setStatus(Kort.Status.SYNLIGT);
         }
 
     }
@@ -135,7 +189,7 @@ public class Memory extends JFrame implements ActionListener{
         this.spelKort = new Kort[rows*columns];
 
         for (int i=0; i<((rows*columns)/2);i++) {
-            this.spelKort[i] = this.k[i];   //lägger in de /2 första
+            this.spelKort[i] = this.k[i].copy();   //lägger in de /2 första
             this.spelKort[i+((rows*columns)/2)] = this.k[i];    //lägger in andra hälften
         }
 
@@ -145,10 +199,13 @@ public class Memory extends JFrame implements ActionListener{
 
         System.out.println("rows: " + rows + ", columns: " + columns);
         this.gamePanel = new JPanel(new GridLayout(rows,columns));
+        gamePanel.setPreferredSize(new Dimension(150*columns,150*rows));
+
 
 
         for (int i=0; i<(rows*columns);i++) {   //loopar ut alla kort
             gamePanel.add(spelKort[i]);
+            //spelKort[i].setStatus(Kort.Status.DOLT);
             spelKort[i].addActionListener(this);
         }
 
