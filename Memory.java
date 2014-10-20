@@ -63,12 +63,14 @@ public class Memory extends JFrame implements ActionListener{
 
 
         JPanel btnPanel = new JPanel(new FlowLayout());
+     
         this.newBtn = new JButton("Nytt");
         this.quitBtn = new JButton("Avsluta");
         newBtn.addActionListener(this);
         quitBtn.addActionListener(this);
         btnPanel.add(this.newBtn);
         btnPanel.add(this.quitBtn);
+
         add(btnPanel, BorderLayout.SOUTH);
 
         JLabel lblSpelare1 = new JLabel("Spelare 1");
@@ -106,10 +108,10 @@ public class Memory extends JFrame implements ActionListener{
 
 
     private class spelPlan extends JPanel {
-         public void paintComponent(Graphics g) {
-             super.paintComponent(g);
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
 
-         }
+        }
 
     }
 
@@ -147,9 +149,7 @@ public class Memory extends JFrame implements ActionListener{
 
         for (int i=0; i<(rows*columns);i++) {   //loopar ut alla kort
             gamePanel.add(spelKort[i]);
-
             spelKort[i].addActionListener(this);
-
         }
 
 
