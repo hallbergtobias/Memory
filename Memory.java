@@ -1,18 +1,22 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
 /**
  *
  */
-public class Memory extends JFrame {
+public class Memory extends JFrame implements ActionListener{
 
 
     private Kort k[]; //alla kort
     private Kort spelKort[]; //kort vi spelar med
     private int rows;
     private int columns;
+    private JButton newBtn, quitBtn;
+    private JPanel gamePanel;
+
 
     public Memory() {
 
@@ -26,8 +30,7 @@ public class Memory extends JFrame {
 
             ImageIcon bild = new ImageIcon(bilder[i].getPath());
 
-            Kort kort = new Kort(bild);
-            k[i] = kort;
+            k[i] = new Kort(bild, Kort.Status.SYNLIGT); //ska ej vara synligt
 
             System.out.println(bild);
 
@@ -36,14 +39,14 @@ public class Memory extends JFrame {
 
 
 
-
+/*
         String antKol = JOptionPane.showInputDialog("Ange antal kolumner: ");
         this.columns = Integer.parseInt(antKol);
         String antRad = JOptionPane.showInputDialog("Ange antal rader: ");
         this.rows = Integer.parseInt(antRad);
-
-       /* columns = 2; //satte värde för pallade inte alla rutor
-        rows = 2; */
+*/
+        columns = 4; //satte värde för pallade inte alla rutor
+        rows = 4;
 
 
 
@@ -60,10 +63,12 @@ public class Memory extends JFrame {
 
 
         JPanel btnPanel = new JPanel(new FlowLayout());
-        JButton newBtn = new JButton("Nytt");
-        JButton quitBtn = new JButton("Avsluta");
-        btnPanel.add(newBtn);
-        btnPanel.add(quitBtn);
+        this.newBtn = new JButton("Nytt");
+        this.quitBtn = new JButton("Avsluta");
+        newBtn.addActionListener(this);
+        quitBtn.addActionListener(this);
+        btnPanel.add(this.newBtn);
+        btnPanel.add(this.quitBtn);
         add(btnPanel, BorderLayout.SOUTH);
 
         JLabel lblSpelare1 = new JLabel("Spelare 1");
@@ -91,6 +96,8 @@ public class Memory extends JFrame {
 
         setVisible(true);
 
+        pack();
+
 
 
 
@@ -101,11 +108,23 @@ public class Memory extends JFrame {
     private class spelPlan extends JPanel {
          public void paintComponent(Graphics g) {
              super.paintComponent(g);
+
          }
 
     }
 
-    public void nyttSpel () {   //ska anropas när NYTT klickas
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource() == newBtn) {
+            this.remove(gamePanel);     //tar bort gamePanel för att kunna måla om den på nytt
+            nyttSpel();
+        } else if (e.getSource() == quitBtn) {
+            System.exit(1);
+        }
+
+    }
+
+    public void nyttSpel () {
 
         Verktyg verktyg = new Verktyg();
         verktyg.slumpOrdning(this.k);    //blandar om för att kunna plocka ut hälften
@@ -121,15 +140,28 @@ public class Memory extends JFrame {
         verktyg.slumpOrdning(this.spelKort);    //slumpar slutligen om igen
 
 
-        //ska här placeras ut
 
-        JPanel gamePanel = new JPanel(new GridLayout(columns,rows));
+        System.out.println("rows: " + rows + ", columns: " + columns);
+        this.gamePanel = new JPanel(new GridLayout(rows,columns));
+
 
         for (int i=0; i<(rows*columns);i++) {   //loopar ut alla kort
             gamePanel.add(spelKort[i]);
+
+            spelKort[i].addActionListener(this);
+
         }
 
-        add(gamePanel);
+
+
+
+        add(gamePanel, BorderLayout.CENTER);
+
+
+
+
+        revalidate();
+        repaint();
 
 
 
