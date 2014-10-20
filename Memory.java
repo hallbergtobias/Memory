@@ -63,7 +63,18 @@ public class Memory extends JFrame {
         JButton newBtn = new JButton("Nytt");
         JButton quitBtn = new JButton("Avsluta");
         btnPanel.add(newBtn);
+        newBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                nyttSpel();
+            }
+        });
         btnPanel.add(quitBtn);
+        quitBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                System.exit(0);
+            }
+        });
         add(btnPanel, BorderLayout.SOUTH);
 
         JLabel lblSpelare1 = new JLabel("Spelare 1");
@@ -127,6 +138,8 @@ public class Memory extends JFrame {
 
         for (int i=0; i<(rows*columns);i++) {   //loopar ut alla kort
             gamePanel.add(spelKort[i]);
+            spelKort[i].setStatus(Kort.Status.DOLT);
+            spelKort[i].addActionListener(this);
         }
 
         add(gamePanel);
@@ -148,6 +161,8 @@ public class Memory extends JFrame {
         new Memory();
 
     }
+    public void actionPerformed(ActionEvent e) {
 
+    }
 
 }
