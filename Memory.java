@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -101,10 +102,13 @@ public class Memory extends JFrame implements ActionListener{
 
         player1 = new JPanel();
         player1.setBackground(Color.YELLOW);
+        player1.setBorder(BorderFactory.createLoweredBevelBorder());
         activePlayer = playerEtt;
         player1.add(lblSpelare1);
+
         player2 = new JPanel();
-        player2.setBackground(Color.GRAY);
+        player2.setBackground(Color.LIGHT_GRAY);
+        player2.setBorder(BorderFactory.createRaisedBevelBorder());
         player2.add(lblSpelare2);
         playerPanel.add(player1);
         playerPanel.add(player2);
@@ -198,11 +202,18 @@ public class Memory extends JFrame implements ActionListener{
                 if (activePlayer == playerEtt) {
                     activePlayer = playerTvå;
                     player2.setBackground(Color.YELLOW);
-                    player1.setBackground(Color.GRAY);
+                    player1.setBackground(Color.LIGHT_GRAY);
+                    player2.setBorder(BorderFactory.createLoweredBevelBorder());
+                    player1.setBorder(BorderFactory.createRaisedBevelBorder());
+
+
                 } else {
                     activePlayer = playerEtt;
                     player1.setBackground(Color.YELLOW);
-                    player2.setBackground(Color.GRAY);
+                    player2.setBackground(Color.LIGHT_GRAY);
+                    player1.setBorder(BorderFactory.createLoweredBevelBorder());
+                    player2.setBorder(BorderFactory.createRaisedBevelBorder());
+
                 }
             }
             första = null;
