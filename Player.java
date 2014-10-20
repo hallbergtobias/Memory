@@ -25,4 +25,8 @@ public class Player {
     public String getName() {
         return name;
     }
+
+    public void reset() {
+        points = 0;
+    }
 }
