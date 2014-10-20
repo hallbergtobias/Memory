@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -24,8 +23,11 @@ public class Memory extends JFrame implements ActionListener{
     private JPanel gamePanel;
     private Timer timer;
 
-    JPanel player1;
-    JPanel player2;
+    private JPanel player1;
+    private JPanel player2;
+
+    private JLabel points1;
+    private JLabel points2;
 
     public Memory() {
         try {   //NullPointerException = ingen mapp
@@ -95,8 +97,8 @@ public class Memory extends JFrame implements ActionListener{
         btnPanel.add(this.quitBtn);
         add(btnPanel, BorderLayout.SOUTH);
 
-        JLabel lblSpelare1 = new JLabel("Spelare 1");
-        JLabel lblSpelare2 = new JLabel("Spelare 2");
+        JLabel lblSpelare1 = new JLabel(playerEtt.getName());
+        JLabel lblSpelare2 = new JLabel(playerTvå.getName());
         JPanel playerPanel = new JPanel(new GridLayout(2,1));
         playerPanel.setPreferredSize(new Dimension(80, 260));
 
@@ -105,11 +107,15 @@ public class Memory extends JFrame implements ActionListener{
         player1.setBorder(BorderFactory.createLoweredBevelBorder());
         activePlayer = playerEtt;
         player1.add(lblSpelare1);
+        points1 = new JLabel("0");
+        player1.add(points1, BorderLayout.CENTER);
 
         player2 = new JPanel();
         player2.setBackground(Color.LIGHT_GRAY);
         player2.setBorder(BorderFactory.createRaisedBevelBorder());
         player2.add(lblSpelare2);
+        points2 = new JLabel("0");
+        player2.add(points2, BorderLayout.CENTER);
         playerPanel.add(player1);
         playerPanel.add(player2);
         add(playerPanel, BorderLayout.WEST);
@@ -132,6 +138,10 @@ public class Memory extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == newBtn) {
             this.remove(gamePanel); //tar bort gamePanel för att kunna måla om den på nytt
+            playerEtt.reset();
+            playerTvå.reset();
+            points2.setText("0");
+            points1.setText("0");
             nyttSpel();
         } else if (e.getSource() == quitBtn) {
             System.exit(1);
@@ -189,11 +199,17 @@ public class Memory extends JFrame implements ActionListener{
 
                 if (playerEtt == activePlayer) {
                     playerEtt.addPoint();
+                    points1.setText(String.valueOf(playerEtt.getPoints()));
                     System.out.println("playerEtt fick poäng, har nu: " + playerEtt.getPoints());
                 } else {
                     playerTvå.addPoint();
+                    points2.setText(String.valueOf(playerTvå.getPoints()));
                     System.out.println("playerTvå fick poäng, har nu: " + playerTvå.getPoints());
 
+                }
+
+                if (spelKort.length/2 == (playerEtt.getPoints() + playerTvå.getPoints())) {
+                    JOptionPane.showMessageDialog(null, String.format("Grattis " + activePlayer.getName() +  ", du vann! "));
                 }
 
             } else {
@@ -205,15 +221,12 @@ public class Memory extends JFrame implements ActionListener{
                     player1.setBackground(Color.LIGHT_GRAY);
                     player2.setBorder(BorderFactory.createLoweredBevelBorder());
                     player1.setBorder(BorderFactory.createRaisedBevelBorder());
-
-
                 } else {
                     activePlayer = playerEtt;
                     player1.setBackground(Color.YELLOW);
                     player2.setBackground(Color.LIGHT_GRAY);
                     player1.setBorder(BorderFactory.createLoweredBevelBorder());
                     player2.setBorder(BorderFactory.createRaisedBevelBorder());
-
                 }
             }
             första = null;
