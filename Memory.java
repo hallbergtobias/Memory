@@ -63,7 +63,7 @@ public class Memory extends JFrame implements ActionListener{
 
 
         JPanel btnPanel = new JPanel(new FlowLayout());
-     
+
         this.newBtn = new JButton("Nytt");
         this.quitBtn = new JButton("Avsluta");
         newBtn.addActionListener(this);
