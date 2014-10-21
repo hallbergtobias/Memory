@@ -30,7 +30,7 @@ public class Memory extends JFrame implements ActionListener{
     private JLabel points1;     //poäng spelare 1
     private JLabel points2;     //poäng spelare 2
     
-    private String namn;
+
     public int maxpoint;
 
     public Memory() {
@@ -93,17 +93,13 @@ public class Memory extends JFrame implements ActionListener{
 
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(400,400); //ska bero på antalet kolumner/rader!
-        setLocation(300,100);
-
-
-
-
-
+        setSize(400,400);
+        setLocation(100,100);
         spelPlan plan = new spelPlan();
         add(plan);
 
-        while (namn == null || namn.length() == 0) {
+        String namn = "";
+        while (namn == null || namn.length() == 0) {    //Hämtar namn på spelare 1
             namn = JOptionPane.showInputDialog("Vad heter spelare 1?");
             if(namn == null) {
                 System.exit(0);
@@ -111,7 +107,7 @@ public class Memory extends JFrame implements ActionListener{
         }
         playerEtt = new Player(namn, true);
         namn = null;
-        while (namn == null || namn.length() == 0) {
+        while (namn == null || namn.length() == 0) {        //Hämtar namn på spelare 2
             namn = JOptionPane.showInputDialog("Vad heter spelare 2?");
             if(namn == null) {
                 System.exit(0);
@@ -119,10 +115,11 @@ public class Memory extends JFrame implements ActionListener{
         }
         playerTvå = new Player(namn);
 
-        JPanel btnPanel = new JPanel(new FlowLayout());
+        JPanel btnPanel = new JPanel(new FlowLayout());     //knapp-panel
 
         this.newBtn = new JButton("Nytt");
         this.quitBtn = new JButton("Avsluta");
+
 
         newBtn.addActionListener(this);
         quitBtn.addActionListener(this);
@@ -130,34 +127,51 @@ public class Memory extends JFrame implements ActionListener{
         btnPanel.add(this.quitBtn);
         add(btnPanel, BorderLayout.SOUTH);
 
-        Font playerFont = new Font(Font.SANS_SERIF, Font.BOLD, 20);
-        JLabel lblSpelare1 = new JLabel(playerEtt.getName());
+
+        Font playerFont = new Font(Font.SANS_SERIF, Font.BOLD, 20);     //typsnitt för spelarpanel
+
+        JLabel lblSpelare1 = new JLabel(playerEtt.getName());   //Spelare 1 namn
         lblSpelare1.setFont(playerFont);
-        JLabel lblSpelare2 = new JLabel(playerTvå.getName());
+        lblSpelare1.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel lblSpelare2 = new JLabel(playerTvå.getName());       //Spelare 2 namn
         lblSpelare2.setFont(playerFont);
-        JPanel playerPanel = new JPanel(new GridLayout(2,1));
+        lblSpelare2.setHorizontalAlignment(SwingConstants.CENTER);
+
+
+        JPanel playerPanel = new JPanel(new GridLayout(2,1));   //spelarpanel, 2x1 rutor
         playerPanel.setPreferredSize(new Dimension(80, 260));
 
-        player1 = new JPanel();
+
+
+        player1 = new JPanel(new BorderLayout());       //spelare 1 ruta
         player1.setBackground(Color.YELLOW);
         player1.setBorder(BorderFactory.createLoweredBevelBorder());
+        player1.add(lblSpelare1, BorderLayout.NORTH);
         activePlayer = playerEtt;
-        player1.add(lblSpelare1);
-        points1 = new JLabel("0");
+        points1 = new JLabel("0");      //spelare 1 poäng
+        points1.setFont(playerFont);
+        points1.setHorizontalAlignment(SwingConstants.CENTER);
         player1.add(points1, BorderLayout.CENTER);
 
-        player2 = new JPanel();
+
+
+
+        player2 = new JPanel(new BorderLayout());       //spelare 2 ruta
         player2.setBackground(Color.LIGHT_GRAY);
         player2.setBorder(BorderFactory.createRaisedBevelBorder());
-        player2.add(lblSpelare2);
-        points2 = new JLabel("0");
+        player2.add(lblSpelare2, BorderLayout.NORTH);
+        points2 = new JLabel("0");      //spelare 2 poäng
+        points2.setFont(playerFont);
+        points2.setHorizontalAlignment(SwingConstants.CENTER);
         player2.add(points2, BorderLayout.CENTER);
+
         playerPanel.add(player1);
         playerPanel.add(player2);
-        add(playerPanel, BorderLayout.WEST);
+
+        add(playerPanel, BorderLayout.WEST);    //Spelarpanel läggs in
 
 
-        nyttSpel();
+        nyttSpel();     //Kallar på nytt spel
         setVisible(true);
         pack();
 
@@ -227,30 +241,31 @@ public class Memory extends JFrame implements ActionListener{
 
     public class TimerListener implements ActionListener {
         public void actionPerformed (ActionEvent e){
-            if (första.sammaBild(andra)) {
+
+            if (första.sammaBild(andra)) {      //Båda valda bilder lika
                 första.setStatus(Kort.Status.SAKNAS);
                 andra.setStatus(Kort.Status.SAKNAS);
-                //få poäng
-                if (playerEtt == activePlayer) {
+
+                if (playerEtt == activePlayer) {        //poäng till spelare 1
                     playerEtt.addPoint();
                     points1.setText(String.valueOf(playerEtt.getPoints()));
                     System.out.println("playerEtt fick poäng, har nu: " + playerEtt.getPoints());
-                } else {
+                } else {        //poäng till spelare 2
                     playerTvå.addPoint();
                     points2.setText(String.valueOf(playerTvå.getPoints()));
                     System.out.println("playerTvå fick poäng, har nu: " + playerTvå.getPoints());
                 }
                 vinnare();
-            } else {
+            } else {        //De två valda bilderna var ej lika
                 första.setStatus(Kort.Status.DOLT);
                 andra.setStatus(Kort.Status.DOLT);
-                if (activePlayer == playerEtt) {
+                if (activePlayer == playerEtt) {        //Byter spelares tur
                     activePlayer = playerTvå;
                     player2.setBackground(Color.YELLOW);
                     player1.setBackground(Color.LIGHT_GRAY);
                     player2.setBorder(BorderFactory.createLoweredBevelBorder());
                     player1.setBorder(BorderFactory.createRaisedBevelBorder());
-                } else {
+                } else {        //Byter spelares tur
                     activePlayer = playerEtt;
                     player1.setBackground(Color.YELLOW);
                     player2.setBackground(Color.LIGHT_GRAY);
@@ -263,7 +278,7 @@ public class Memory extends JFrame implements ActionListener{
         }
     }
     
-        public void vinnare() {
+        public void vinnare() {     //Person vann
         if (första.sammaBild(andra)) {
             maxpoint = maxpoint - 1;
             System.out.print("Maxpoint =" + maxpoint);
@@ -271,7 +286,7 @@ public class Memory extends JFrame implements ActionListener{
         if (maxpoint == 0) {
             if (playerEtt.getPoints() > playerTvå.getPoints()) {
                 JOptionPane.showMessageDialog(null, "Grattis " + playerEtt.getName() + " du vann!");
-            } else if (playerEtt.getPoints() > playerTvå.getPoints()){
+            } else if (playerEtt.getPoints() < playerTvå.getPoints()){
                 JOptionPane.showMessageDialog(null, "Grattis " + playerTvå.getName() + " du vann!");
             } else {
                 JOptionPane.showMessageDialog(null, "Det blev lika!");
