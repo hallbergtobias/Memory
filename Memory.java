@@ -66,7 +66,6 @@ public class Memory extends JFrame implements ActionListener{
                     JOptionPane.showMessageDialog(this, "Både antal kolumner och rader måste vara över 1");
                 } else {
                     notEnoughCards = false;
-                    maxpoint = (columns*rows)/2;
                 }
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Ange antaler rader/kolumner som en siffra, tex \"4\".");
@@ -166,6 +165,7 @@ public class Memory extends JFrame implements ActionListener{
         }
     }
     public void nyttSpel () { //nytt spel skapas
+        maxpoint = (columns*rows)/2;
         Verktyg verktyg = new Verktyg();
         verktyg.slumpOrdning(this.k); //blandar om för att kunna plocka ut hälften
         this.spelKort = new Kort[rows*columns];
@@ -179,7 +179,7 @@ public class Memory extends JFrame implements ActionListener{
         gamePanel.setPreferredSize(new Dimension(150*columns,150*rows));
         for (int i=0; i<(rows*columns);i++) { //loopar ut alla kort på spelplanen
             gamePanel.add(spelKort[i]);
-            spelKort[i].setStatus(Kort.Status.DOLT);
+            spelKort[i].setStatus(Kort.Status.SYNLIGT);
             spelKort[i].addActionListener(this);
         }
         add(gamePanel, BorderLayout.CENTER);
