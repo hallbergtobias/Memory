@@ -47,11 +47,11 @@ public class Memory extends JFrame implements ActionListener{
         }
         boolean notEnoughCards = true;
         while (notEnoughCards) { //Kollar om vi har tillräckligt med kort för inmatade kolumner/rader
-            String antKol = JOptionPane.showInputDialog("Ange antal kolumner med ett heltal över 1 ");
+            String antKol = JOptionPane.showInputDialog("Ange antal kolumner med ett heltal över 0 ");
             if(antKol == null) {
                 System.exit(0);
             }
-            String antRad = JOptionPane.showInputDialog("Ange antal rader med et heltal över 1: ");
+            String antRad = JOptionPane.showInputDialog("Ange antal rader med ett heltal över 0: ");
             if(antRad == null) {
                 System.exit(0);
             }
@@ -62,7 +62,7 @@ public class Memory extends JFrame implements ActionListener{
                     JOptionPane.showMessageDialog(this, "Du har för få bilder i din bildmapp. Ange färe kolumner/rader.");
                 } else if ((this.columns*this.rows)%2==1) { //I memory krävs jämnt antal bilder
                     JOptionPane.showMessageDialog(this, "Du kan inte ha ett ojämnt antal memorykort");
-                } else if (columns < 2 || rows < 2){
+                } else if (columns < 1 || rows < 1){
                     JOptionPane.showMessageDialog(this, "Både antal kolumner och rader måste vara över 1");
                 } else {
                     notEnoughCards = false;
@@ -77,15 +77,15 @@ public class Memory extends JFrame implements ActionListener{
         spelPlan plan = new spelPlan();
         add(plan);
         String namn = "";
-        while (namn == null || namn.length() == 0) { //Hämtar namn på spelare 1
+        while (namn.length() == 0) { //Hämtar namn på spelare 1
             namn = JOptionPane.showInputDialog("Vad heter spelare 1?");
             if(namn == null) {
                 System.exit(0);
             }
         }
         playerEtt = new Player(namn, true);
-        namn = null;
-        while (namn == null || namn.length() == 0) { //Hämtar namn på spelare 2
+        namn = "";
+        while (namn.length() == 0) { //Hämtar namn på spelare 2
             namn = JOptionPane.showInputDialog("Vad heter spelare 2?");
             if(namn == null) {
                 System.exit(0);
@@ -101,6 +101,7 @@ public class Memory extends JFrame implements ActionListener{
         btnPanel.add(this.quitBtn);
         add(btnPanel, BorderLayout.SOUTH);
         Font playerFont = new Font(Font.SANS_SERIF, Font.BOLD, 20); //typsnitt för spelarpanel
+        Font score = new Font(Font.SANS_SERIF, Font.BOLD, 50);
         JLabel lblSpelare1 = new JLabel(playerEtt.getName()); //Spelare 1 namn
         lblSpelare1.setFont(playerFont);
         lblSpelare1.setHorizontalAlignment(SwingConstants.CENTER);
@@ -115,7 +116,7 @@ public class Memory extends JFrame implements ActionListener{
         player1.add(lblSpelare1, BorderLayout.NORTH);
         activePlayer = playerEtt;
         points1 = new JLabel("0"); //spelare 1 poäng
-        points1.setFont(playerFont);
+        points1.setFont(score);
         points1.setHorizontalAlignment(SwingConstants.CENTER);
         player1.add(points1, BorderLayout.CENTER);
         player2 = new JPanel(new BorderLayout()); //spelare 2 ruta
@@ -123,7 +124,7 @@ public class Memory extends JFrame implements ActionListener{
         player2.setBorder(BorderFactory.createRaisedBevelBorder());
         player2.add(lblSpelare2, BorderLayout.NORTH);
         points2 = new JLabel("0"); //spelare 2 poäng
-        points2.setFont(playerFont);
+        points2.setFont(score);
         points2.setHorizontalAlignment(SwingConstants.CENTER);
         player2.add(points2, BorderLayout.CENTER);
         playerPanel.add(player1);
@@ -179,7 +180,7 @@ public class Memory extends JFrame implements ActionListener{
         gamePanel.setPreferredSize(new Dimension(150*columns,150*rows));
         for (int i=0; i<(rows*columns);i++) { //loopar ut alla kort på spelplanen
             gamePanel.add(spelKort[i]);
-            spelKort[i].setStatus(Kort.Status.SYNLIGT);
+            spelKort[i].setStatus(Kort.Status.DOLT);
             spelKort[i].addActionListener(this);
         }
         add(gamePanel, BorderLayout.CENTER);
