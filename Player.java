@@ -5,7 +5,7 @@ public class Player {
     private int points;
     private boolean active;
 
-    public Player (String name) {
+    public Player (String name) {   //skapar ej-aktiv spelare
         this(name, false);
     }
 

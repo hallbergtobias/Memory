@@ -3,7 +3,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 /**
- *
+ * @author Tobias Hallberg
+ * @author Emil Hukic
  */
 public class Memory extends JFrame implements ActionListener{
 
@@ -11,31 +12,31 @@ public class Memory extends JFrame implements ActionListener{
     private Kort k[]; //alla kort
     private Kort spelKort[]; //kort vi spelar med
 
-    private int rows;
-    private int columns;
+    private int rows;   //antal rader
+    private int columns;    //antal kolumner
     private Kort första;
     private Kort andra;
 
     private Player playerEtt;
     private Player playerTvå;
     private Player activePlayer;
-    private JButton newBtn, quitBtn;
-    private JPanel gamePanel;
+    private JButton newBtn, quitBtn;    //knapp Nytt och Avbryt
+    private JPanel gamePanel;   //Spelpanelen
     private Timer timer;
 
     private JPanel player1;
     private JPanel player2;
 
-    private JLabel points1;
-    private JLabel points2;
+    private JLabel points1;     //poäng spelare 1
+    private JLabel points2;     //poäng spelare 2
 
     public Memory() {
-        try {   //NullPointerException = ingen mapp
+        try {   //Kollar att mappen finns och att mappen innehåller > 1 bild
 
             File bildmapp = new File("bildmapp");
             File[] bilder = bildmapp.listFiles();
 
-            if (bilder.length<2) { //bildmappen innehåller för få bilder
+            if (bilder.length<2) { //för få bilder - avslutar
                 JOptionPane.showMessageDialog(this, "Mappen bildmapp innehåller endast " + bilder.length + " bilder. " +
                         "Lägg in fler bilder. Programmet avslutas");
                 System.exit(0);
@@ -49,7 +50,7 @@ public class Memory extends JFrame implements ActionListener{
                 System.out.println(bild);
             }
 
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) {  //mappen finns ej - avslutar
             JOptionPane.showMessageDialog(this, "Mappen \"bildmapp\" hittas ej. Programmet avslutas");
             System.out.println("bildmapp not found: " + e);
             System.exit(0);
@@ -58,15 +59,18 @@ public class Memory extends JFrame implements ActionListener{
 
         boolean notEnoughCards = true;
 
-        while (notEnoughCards) {
+        while (notEnoughCards) {    //Kollar om vi har tillräckligt med kort för inmatade kolumner/rader
             String antKol = JOptionPane.showInputDialog("Ange antal kolumner: ");
             String antRad = JOptionPane.showInputDialog("Ange antal rader: ");
 
-            try {   //numberformatexcetion - rad/kolumn ej angiven som siffra
+            try {   // Rad/kolumn ej angiven som siffra
                 this.columns = Integer.parseInt(antKol);
                 this.rows = Integer.parseInt(antRad);
                 if ((this.columns*this.rows)/2 > this.k.length) {
                     JOptionPane.showMessageDialog(this, "Du har för få bilder i din bildmapp. Ange färe kolumner/rader.");
+                } else if ((this.columns*this.rows)%2==1) {     //I memory krävs jämnt antal bilder
+                    JOptionPane.showMessageDialog(this, "Du kan inte ha ett ojämnt antal memorykort");
+
                 } else {
                     notEnoughCards = false;
                 }
@@ -79,7 +83,12 @@ public class Memory extends JFrame implements ActionListener{
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(400,400); //ska bero på antalet kolumner/rader!
-        setLocation(500,200);
+        setLocation(300,100);
+
+
+
+
+
         spelPlan plan = new spelPlan();
         add(plan);
 
@@ -128,7 +137,7 @@ public class Memory extends JFrame implements ActionListener{
     }
 
 
-    private class spelPlan extends JPanel {
+    private class spelPlan extends JPanel { //skapar vår spelplan
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
         }
@@ -136,22 +145,22 @@ public class Memory extends JFrame implements ActionListener{
 
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == newBtn) {
+        if (e.getSource() == newBtn) {  //om Nytt-knappen blivit klickad
             this.remove(gamePanel); //tar bort gamePanel för att kunna måla om den på nytt
             playerEtt.reset();
             playerTvå.reset();
             points2.setText("0");
             points1.setText("0");
             nyttSpel();
-        } else if (e.getSource() == quitBtn) {
+        } else if (e.getSource() == quitBtn) {  //Avbryt - stänger ned programmet
             System.exit(1);
 
-        } else if (e.getSource() instanceof Kort) {
+        } else if (e.getSource() instanceof Kort) {     //kort är klickat
             Kort valtKort = (Kort) e.getSource();
-            if (första == null) {
+            if (första == null) {   //visar kort
                 första = valtKort;
                 första.setStatus(Kort.Status.SYNLIGT);
-            }  else if (första != valtKort && andra == null) {
+            }  else if (första != valtKort && andra == null) {  //visar andra kortet
                 andra = valtKort;
                 andra.setStatus(Kort.Status.SYNLIGT);
                 this.timer = new Timer(DELAY, new TimerListener());
@@ -162,12 +171,12 @@ public class Memory extends JFrame implements ActionListener{
     }
 
 
-    public void nyttSpel () {
+    public void nyttSpel () {   //nytt spel skapas
         Verktyg verktyg = new Verktyg();
         verktyg.slumpOrdning(this.k); //blandar om för att kunna plocka ut hälften
         this.spelKort = new Kort[rows*columns];
 
-        for (int i=0; i<((rows*columns)/2);i++) {
+        for (int i=0; i<((rows*columns)/2);i++) {   //loopar för att lägga in kort vi ska använda i spelKort
             this.spelKort[i] = this.k[i].copy(); //lägger in de /2 första
             this.spelKort[i+((rows*columns)/2)] = this.k[i]; //lägger in andra hälften
         }
@@ -177,7 +186,7 @@ public class Memory extends JFrame implements ActionListener{
         this.gamePanel = new JPanel(new GridLayout(rows,columns));
         gamePanel.setPreferredSize(new Dimension(150*columns,150*rows));
 
-        for (int i=0; i<(rows*columns);i++) { //loopar ut alla kort
+        for (int i=0; i<(rows*columns);i++) { //loopar ut alla kort på spelplanen
             gamePanel.add(spelKort[i]);
             spelKort[i].setStatus(Kort.Status.DOLT);
             spelKort[i].addActionListener(this);
