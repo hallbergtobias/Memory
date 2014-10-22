@@ -7,8 +7,8 @@ import java.io.File;
  * @author Emil Hukic
  */
 public class Memory extends JFrame implements ActionListener{
-    //alla variabler, kanske lite väl många...
-    public static final int DELAY = 1500;
+    //alla variabler
+    public static final int DELAY = 1500;       //1,5s delay vid par
     private Kort k[]; //alla kort
     private Kort spelKort[]; //kort vi spelar med
     private int rows; //antal rader
@@ -76,9 +76,8 @@ public class Memory extends JFrame implements ActionListener{
         }
 
 
-        //får båda spelares namn
 
-        //skapar spelare och ger namn, spelare 1 får vara den som börjar
+        //Skapar spelare och hämtar namn, spelare 1 får börjar
         playerEtt = new Player(true);
         playerTvå = new Player(false);
 
@@ -88,6 +87,7 @@ public class Memory extends JFrame implements ActionListener{
         setLocation(100,100);
         spelPlan plan = new spelPlan();
         add(plan);
+
         JPanel btnPanel = new JPanel(new FlowLayout()); //knapp-panel
         this.newBtn = new JButton("Nytt");
         this.quitBtn = new JButton("Avsluta");
@@ -96,25 +96,31 @@ public class Memory extends JFrame implements ActionListener{
         btnPanel.add(this.newBtn);
         btnPanel.add(this.quitBtn);
         add(btnPanel, BorderLayout.SOUTH);
-        Font playerFont = new Font(Font.SANS_SERIF, Font.BOLD, 20); //typsnitt för spelarpanel
-        Font score = new Font(Font.SANS_SERIF, Font.BOLD, 50);
+
+        Font playerFont = new Font(Font.SANS_SERIF, Font.BOLD, 20); //typsnitt för spelarnamn
+        Font score = new Font(Font.SANS_SERIF, Font.BOLD, 50);      //typsnitt poäng
+
         JLabel lblSpelare1 = new JLabel(playerEtt.getName()); //Spelare 1 namn
         lblSpelare1.setFont(playerFont);
         lblSpelare1.setHorizontalAlignment(SwingConstants.CENTER);
         JLabel lblSpelare2 = new JLabel(playerTvå.getName()); //Spelare 2 namn
         lblSpelare2.setFont(playerFont);
         lblSpelare2.setHorizontalAlignment(SwingConstants.CENTER);
+
         JPanel playerPanel = new JPanel(new GridLayout(2,1)); //spelarpanel, 2x1 rutor
         playerPanel.setPreferredSize(new Dimension(80, 260));
+
         player1 = new JPanel(new BorderLayout()); //spelare 1 ruta
         player1.setBackground(Color.YELLOW);
         player1.setBorder(BorderFactory.createLoweredBevelBorder());
         player1.add(lblSpelare1, BorderLayout.NORTH);
         activePlayer = playerEtt;
+
         points1 = new JLabel("0"); //spelare 1 poäng
         points1.setFont(score);
         points1.setHorizontalAlignment(SwingConstants.CENTER);
         player1.add(points1, BorderLayout.CENTER);
+
         player2 = new JPanel(new BorderLayout()); //spelare 2 ruta
         player2.setBackground(Color.LIGHT_GRAY);
         player2.setBorder(BorderFactory.createRaisedBevelBorder());
@@ -123,22 +129,28 @@ public class Memory extends JFrame implements ActionListener{
         points2.setFont(score);
         points2.setHorizontalAlignment(SwingConstants.CENTER);
         player2.add(points2, BorderLayout.CENTER);
+
         playerPanel.add(player1);
         playerPanel.add(player2);
         add(playerPanel, BorderLayout.WEST); //Spelarpanel läggs in
+
+
         nyttSpel(); //Kallar på nytt spel
+
         setVisible(true);
         pack();
     }
+
     private class spelPlan extends JPanel { //skapar vår spelplan
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
         }
     }
+
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == newBtn) { //om Nytt-knappen blivit klickad
             this.remove(gamePanel); //tar bort gamePanel för att kunna måla om den på nytt
-            playerEtt.reset();      //om man inte gör spelarnas poäng 0 igen blir det problem
+            playerEtt.reset();      //Sätter spelarnas poäng till 0
             playerTvå.reset();
             points2.setText("0");
             points1.setText("0");
@@ -147,7 +159,7 @@ public class Memory extends JFrame implements ActionListener{
             System.exit(1);
         } else if (e.getSource() instanceof Kort) { //kort är klickat
             Kort valtKort = (Kort) e.getSource();
-            if (valtKort.getStatus() == Kort.Status.SAKNAS) //utan detta så kan man "välja" kort som är ur spelet igen
+            if (valtKort.getStatus() == Kort.Status.SAKNAS) //Klickat kort är redan ute ur spelet
                 return;
             if (första == null) { //visar kort
                 första = valtKort;
@@ -156,11 +168,12 @@ public class Memory extends JFrame implements ActionListener{
                 andra = valtKort;
                 andra.setStatus(Kort.Status.SYNLIGT);
                 this.timer = new Timer(DELAY, new TimerListener()); //skapar timer
-                timer.setRepeats(false);    //skickar bara en action event, om true blir timern lite konstig
+                timer.setRepeats(false);
                 timer.start();              //startar timern
             }
         }
     }
+
     public void nyttSpel () { //nytt spel skapas
         maxpoint = (columns*rows)/2;        //variabel för största möjliga poäng
         Verktyg verktyg = new Verktyg();
@@ -171,7 +184,6 @@ public class Memory extends JFrame implements ActionListener{
             this.spelKort[i+((rows*columns)/2)] = this.k[i]; //lägger in andra hälften
         }
         verktyg.slumpOrdning(this.spelKort); //slumpar slutligen om igen
-        System.out.println("rows: " + rows + ", columns: " + columns);
         this.gamePanel = new JPanel(new GridLayout(rows,columns));
         gamePanel.setPreferredSize(new Dimension(150*columns,150*rows));
         for (int i=0; i<(rows*columns);i++) { //loopar ut alla kort på spelplanen
@@ -183,6 +195,7 @@ public class Memory extends JFrame implements ActionListener{
         revalidate();
         repaint();
     }
+
     public class TimerListener implements ActionListener {
         public void actionPerformed (ActionEvent e){
             if (första.sammaBild(andra)) { //Båda valda bilder lika
@@ -196,6 +209,7 @@ public class Memory extends JFrame implements ActionListener{
                     points2.setText(String.valueOf(playerTvå.getPoints()));
                 }
                 vinnare(); //kollar om någon har vunnit
+
             } else { //De två valda bilderna var ej lika
                 första.setStatus(Kort.Status.DOLT);
                 andra.setStatus(Kort.Status.DOLT);
@@ -219,9 +233,9 @@ public class Memory extends JFrame implements ActionListener{
     }
     public void vinnare() { //Person vann
         if (första.sammaBild(andra)) {
-            maxpoint = maxpoint - 1;    //sänker antal poäng som kan fås
+            maxpoint = maxpoint - 1;    //Antal poäng kvar att ge
         }
-        if (maxpoint == 0) {        //när antal poäng som kan fås är 0 (alla kort ute ur spel) utses en vinnare
+        if (maxpoint == 0) {        //när antal poäng som kan få är 0 (alla kort ute ur spel) utses en vinnare
             if (playerEtt.getPoints() > playerTvå.getPoints()) {
                 JOptionPane.showMessageDialog(null, "Grattis " + playerEtt.getName() + " du vann!");
             } else if (playerEtt.getPoints() < playerTvå.getPoints()){

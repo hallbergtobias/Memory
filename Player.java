@@ -5,7 +5,7 @@ public class Player {
     private String name;
     private int points;
     private boolean active;
-    private static int nbrPlayers = 1;  //klassvariabel för at hålla koll på mängd spelare
+    private static int nbrPlayers = 1;  //klassvariabel för att hålla koll på spelare
 
 
     //en konstruktor för spelare, ökar klassvariabeln med en för varje Player som har skapats
