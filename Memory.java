@@ -7,6 +7,7 @@ import java.io.File;
  * @author Emil Hukic
  */
 public class Memory extends JFrame implements ActionListener{
+    //alla variabler, kanske lite väl många...
     public static final int DELAY = 1500;
     private Kort k[]; //alla kort
     private Kort spelKort[]; //kort vi spelar med
@@ -25,10 +26,12 @@ public class Memory extends JFrame implements ActionListener{
     private JLabel points1; //poäng spelare 1
     private JLabel points2; //poäng spelare 2
     public int maxpoint;
+
+
     public Memory() {
         try { //Kollar att mappen finns och att mappen innehåller > 1 bild
             File bildmapp = new File("bildmapp");
-            File[] bilder = bildmapp.listFiles();
+            File[] bilder = bildmapp.listFiles();   // gör en array av alla bilder
             if (bilder.length<2) { //för få bilder - avslutar
                 JOptionPane.showMessageDialog(this, "Mappen bildmapp innehåller endast " + bilder.length + " bilder. " +
                         "Lägg in fler bilder. Programmet avslutas");
@@ -48,22 +51,22 @@ public class Memory extends JFrame implements ActionListener{
         boolean notEnoughCards = true;
         while (notEnoughCards) { //Kollar om vi har tillräckligt med kort för inmatade kolumner/rader
             String antKol = JOptionPane.showInputDialog("Ange antal kolumner med ett heltal över 0 ");
-            if(antKol == null) {
+            if(antKol == null) {    //om man trycker avbryt på InputDialogen så stängs programmet
                 System.exit(0);
             }
             String antRad = JOptionPane.showInputDialog("Ange antal rader med ett heltal över 0: ");
-            if(antRad == null) {
+            if(antRad == null) {   //återigen för att stänga programmet
                 System.exit(0);
             }
             try { // Rad/kolumn ej angiven som siffra
                 this.columns = Integer.parseInt(antKol);
-                this.rows = Integer.parseInt(antRad);
-                if ((this.columns*this.rows)/2 > this.k.length) {
+                this.rows = Integer.parseInt(antRad);       //om man inte har lämpligt antal rader och kolumner
+                if ((this.columns*this.rows)/2 > this.k.length) {   //så kommer programmet fortsätta be om input
                     JOptionPane.showMessageDialog(this, "Du har för få bilder i din bildmapp. Ange färe kolumner/rader.");
                 } else if ((this.columns*this.rows)%2==1) { //I memory krävs jämnt antal bilder
                     JOptionPane.showMessageDialog(this, "Du kan inte ha ett ojämnt antal memorykort");
                 } else if (columns < 1 || rows < 1){
-                    JOptionPane.showMessageDialog(this, "Både antal kolumner och rader måste vara över 1");
+                    JOptionPane.showMessageDialog(this, "Du kan inte ha 0 rader eller kolumner");
                 } else {
                     notEnoughCards = false;
                 }
@@ -71,27 +74,20 @@ public class Memory extends JFrame implements ActionListener{
                 JOptionPane.showMessageDialog(this, "Ange antaler rader/kolumner som en siffra, tex \"4\".");
             }
         }
+
+
+        //får båda spelares namn
+
+        //skapar spelare och ger namn, spelare 1 får vara den som börjar
+        playerEtt = new Player(true);
+        playerTvå = new Player(false);
+
+        //allt det grafiska skapas här, bland annat informationen om spelarna till höger, startar även spelet
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(400,400);
         setLocation(100,100);
         spelPlan plan = new spelPlan();
         add(plan);
-        String namn = "";
-        while (namn.length() == 0) { //Hämtar namn på spelare 1
-            namn = JOptionPane.showInputDialog("Vad heter spelare 1?");
-            if(namn == null) {
-                System.exit(0);
-            }
-        }
-        playerEtt = new Player(namn, true);
-        namn = "";
-        while (namn.length() == 0) { //Hämtar namn på spelare 2
-            namn = JOptionPane.showInputDialog("Vad heter spelare 2?");
-            if(namn == null) {
-                System.exit(0);
-            }
-        }
-        playerTvå = new Player(namn);
         JPanel btnPanel = new JPanel(new FlowLayout()); //knapp-panel
         this.newBtn = new JButton("Nytt");
         this.quitBtn = new JButton("Avsluta");
@@ -142,7 +138,7 @@ public class Memory extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == newBtn) { //om Nytt-knappen blivit klickad
             this.remove(gamePanel); //tar bort gamePanel för att kunna måla om den på nytt
-            playerEtt.reset();
+            playerEtt.reset();      //om man inte gör spelarnas poäng 0 igen blir det problem
             playerTvå.reset();
             points2.setText("0");
             points1.setText("0");
@@ -151,7 +147,7 @@ public class Memory extends JFrame implements ActionListener{
             System.exit(1);
         } else if (e.getSource() instanceof Kort) { //kort är klickat
             Kort valtKort = (Kort) e.getSource();
-            if (valtKort.getStatus() == Kort.Status.SAKNAS)
+            if (valtKort.getStatus() == Kort.Status.SAKNAS) //utan detta så kan man "välja" kort som är ur spelet igen
                 return;
             if (första == null) { //visar kort
                 första = valtKort;
@@ -159,14 +155,14 @@ public class Memory extends JFrame implements ActionListener{
             } else if (första != valtKort && andra == null) { //visar andra kortet
                 andra = valtKort;
                 andra.setStatus(Kort.Status.SYNLIGT);
-                this.timer = new Timer(DELAY, new TimerListener());
-                timer.setRepeats(false);
-                timer.start();
+                this.timer = new Timer(DELAY, new TimerListener()); //skapar timer
+                timer.setRepeats(false);    //skickar bara en action event, om true blir timern lite konstig
+                timer.start();              //startar timern
             }
         }
     }
     public void nyttSpel () { //nytt spel skapas
-        maxpoint = (columns*rows)/2;
+        maxpoint = (columns*rows)/2;        //variabel för största möjliga poäng
         Verktyg verktyg = new Verktyg();
         verktyg.slumpOrdning(this.k); //blandar om för att kunna plocka ut hälften
         this.spelKort = new Kort[rows*columns];
@@ -195,13 +191,11 @@ public class Memory extends JFrame implements ActionListener{
                 if (playerEtt == activePlayer) { //poäng till spelare 1
                     playerEtt.addPoint();
                     points1.setText(String.valueOf(playerEtt.getPoints()));
-                    System.out.println("playerEtt fick poäng, har nu: " + playerEtt.getPoints());
                 } else { //poäng till spelare 2
                     playerTvå.addPoint();
                     points2.setText(String.valueOf(playerTvå.getPoints()));
-                    System.out.println("playerTvå fick poäng, har nu: " + playerTvå.getPoints());
                 }
-                vinnare();
+                vinnare(); //kollar om någon har vunnit
             } else { //De två valda bilderna var ej lika
                 första.setStatus(Kort.Status.DOLT);
                 andra.setStatus(Kort.Status.DOLT);
@@ -225,10 +219,9 @@ public class Memory extends JFrame implements ActionListener{
     }
     public void vinnare() { //Person vann
         if (första.sammaBild(andra)) {
-            maxpoint = maxpoint - 1;
-            System.out.print("Maxpoint =" + maxpoint);
+            maxpoint = maxpoint - 1;    //sänker antal poäng som kan fås
         }
-        if (maxpoint == 0) {
+        if (maxpoint == 0) {        //när antal poäng som kan fås är 0 (alla kort ute ur spel) utses en vinnare
             if (playerEtt.getPoints() > playerTvå.getPoints()) {
                 JOptionPane.showMessageDialog(null, "Grattis " + playerEtt.getName() + " du vann!");
             } else if (playerEtt.getPoints() < playerTvå.getPoints()){
